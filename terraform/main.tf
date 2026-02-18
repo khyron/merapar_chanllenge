@@ -1,22 +1,15 @@
+module "archive" {
+  source = "./modules/archive"
+
+  source_dir             = "${path.module}/../lambda"
+  lambda_zip_output_path = "${path.module}/lambda.zip"
+}
+
 module "ssm" {
   source = "./modules/ssm"
 
   parameter_name  = "/challenge/dynamic_string"
   parameter_value = "initial value"
-}
-
-module "apigateway" {
-  source = "./modules/apigateway"
-
-  lambda_invoke_arn = module.lambda.invoke_arn
-}
-
-module "lambda" {
-  source = "./modules/lambda"
-
-  lambda_zip_path = var.lambda_zip_path
-  parameter_name  = module.ssm.parameter_name
-  role_arn        = module.iam.role_arn
 }
 
 module "iam" {
@@ -28,3 +21,25 @@ module "iam" {
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   ]
 }
+
+module "lambda" {
+  source = "./modules/lambda"
+
+  lambda_zip_path   = module.archive.output_path
+  lambda_zip_hash   = module.archive.output_base64sha256
+  parameter_name    = module.ssm.parameter_name
+  role_arn          = module.iam.role_arn
+  # Start with empty, will be updated in second apply
+  api_execution_arn = ""
+}
+
+module "apigateway" {
+  source = "./modules/apigateway"
+
+  lambda_invoke_arn     = module.lambda.invoke_arn
+  lambda_function_name  = module.lambda.function_name
+}
+
+
+
+

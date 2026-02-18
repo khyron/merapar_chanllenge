@@ -5,6 +5,9 @@
 *.tfstate
 *.tfstate.*
 
+# :Zone.Identifier files
+*Zone.Identifier
+
 # Crash log files
 crash.log
 crash.*.log
@@ -35,3 +38,7 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# ignore plan out files
+*.out
+

@@ -1,10 +1,6 @@
 
 variable "aws_region" {
-  default = "us-east-1"
-}
-
-variable "lambda_zip_path" {
-  description = "Path to lambda zip file"
+  description = "AWS region"
   type        = string
-  default     = "../lambda/lambda.zip"
+  default     = "us-east-1"
 }
